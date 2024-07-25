@@ -1,9 +1,10 @@
 mod arrays_and_slices;
 mod bool;
-mod date;
 mod date_time;
 mod float;
 mod int;
+mod naive_date;
+mod naive_date_time;
 mod option;
 mod string;
 mod tuple;

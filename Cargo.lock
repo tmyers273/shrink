@@ -150,6 +150,7 @@ dependencies = [
 name = "shrink_macros"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "proc-macro2",
  "quote",
  "shrink",

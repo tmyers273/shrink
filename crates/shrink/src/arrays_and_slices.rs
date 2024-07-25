@@ -36,6 +36,23 @@ where
     }
 }
 
+impl<T: Classify> Classify for Vec<T>
+where
+    T::Output: Hash + Eq + Ord,
+{
+    type Output = u64;
+
+    fn classify(&self) -> Self::Output {
+        let unique_classifications: BTreeSet<_> = self.iter().map(|item| item.classify()).collect();
+
+        let mut hasher = DefaultHasher::new();
+        for classification in unique_classifications {
+            classification.hash(&mut hasher);
+        }
+        hasher.finish()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
