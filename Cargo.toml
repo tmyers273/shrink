@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/shrink",
+    "crates/shrink_macros",
+]
+
+[profile.dev]
+lto = "off"
+opt-level = 0
+debug = 0
+strip = "debuginfo"
+split-debuginfo = "unpacked"
+
+[workspace.dependencies]
+shrink = { path = "./crates/shrink", version = "0.1.0" }
+shrink_macros = { path = "./crates/shrink_macros", version = "0.1.0" }
