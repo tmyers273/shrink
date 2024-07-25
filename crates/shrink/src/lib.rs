@@ -1,5 +1,7 @@
 mod arrays_and_slices;
 mod bool;
+mod date;
+mod date_time;
 mod float;
 mod int;
 mod option;
