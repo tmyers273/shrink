@@ -1,5 +1,10 @@
+mod arrays_and_slices;
+mod bool;
 mod float;
 mod int;
+mod option;
+mod string;
+mod tuple;
 
 use std::hash::Hash;
 

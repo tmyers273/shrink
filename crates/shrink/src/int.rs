@@ -1,4 +1,4 @@
-#[derive(Debug, Copy, Clone, PartialEq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum IntClassification {
     Zero,
     Positive,
