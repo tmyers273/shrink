@@ -21,6 +21,18 @@ macro_rules! impl_classify_for_uint {
                     }
                 }
             }
+
+            impl crate::Classify for &$t {
+                type Output = IntClassification;
+
+                fn classify(&self) -> IntClassification {
+                    match *self {
+                        0 => IntClassification::Zero,
+                        &x if x == <$t>::MAX => IntClassification::Max,
+                        _ => IntClassification::Positive,
+                    }
+                }
+            }
         )+
     }
 }
@@ -37,6 +49,20 @@ macro_rules! impl_classify_for_int {
                         x if x == <$t>::MAX => IntClassification::Max,
                         x if x == <$t>::MIN => IntClassification::Min,
                         x if x < 0 => IntClassification::Negative,
+                        _ => IntClassification::Positive,
+                    }
+                }
+            }
+
+            impl crate::Classify for &$t {
+                type Output = IntClassification;
+
+                fn classify(&self) -> IntClassification {
+                    match *self {
+                        0 => IntClassification::Zero,
+                        &x if x == <$t>::MAX => IntClassification::Max,
+                        &x if x == <$t>::MIN => IntClassification::Min,
+                        &x if x < 0 => IntClassification::Negative,
                         _ => IntClassification::Positive,
                     }
                 }

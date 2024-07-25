@@ -55,7 +55,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::Classify;
     use shrink_macros::Classify;
 
     #[test]

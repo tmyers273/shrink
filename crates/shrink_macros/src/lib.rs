@@ -12,7 +12,7 @@ pub fn derive_classify(input: TokenStream) -> TokenStream {
     let classify_body = generate_classify_body(&input.data);
 
     let expanded = quote! {
-        impl #impl_generics Classify for #name #ty_generics #where_clause {
+        impl #impl_generics crate::Classify for #name #ty_generics #where_clause {
             type Output = u64;
 
             fn classify(&self) -> Self::Output {
@@ -36,7 +36,7 @@ fn generate_classify_body(data: &Data) -> proc_macro2::TokenStream {
                 let recurse = fields.named.iter().map(|f| {
                     let name = &f.ident;
                     quote! {
-                        self.#name.classify().hash(&mut hasher);
+                        crate::Classify::classify(&self.#name).hash(&mut hasher);
                     }
                 });
                 quote! {
@@ -47,7 +47,7 @@ fn generate_classify_body(data: &Data) -> proc_macro2::TokenStream {
                 let recurse = fields.unnamed.iter().enumerate().map(|(i, _)| {
                     let index = syn::Index::from(i);
                     quote! {
-                        self.#index.classify().hash(&mut hasher);
+                        crate::Classify::classify(&self.#index).hash(&mut hasher);
                     }
                 });
                 quote! {
@@ -95,7 +95,7 @@ pub fn classify_enum_derive(input: TokenStream) -> TokenStream {
                                 let mut hasher = std::collections::hash_map::DefaultHasher::new();
                                 (#index as u64).hash(&mut hasher);
                                 #(
-                                    #field_names.classify().hash(&mut hasher);
+                                    crate::Classify::classify(&#field_names).hash(&mut hasher);
                                 )*
                                 std::hash::Hasher::finish(&hasher)
                             }
@@ -118,7 +118,7 @@ pub fn classify_enum_derive(input: TokenStream) -> TokenStream {
                                 let mut hasher = std::collections::hash_map::DefaultHasher::new();
                                 (#index as u64).hash(&mut hasher);
                                 #(
-                                    #field_names.classify().hash(&mut hasher);
+                                    crate::Classify::classify(&#field_names).hash(&mut hasher);
                                 )*
                                 std::hash::Hasher::finish(&hasher)
                             }
@@ -135,7 +135,7 @@ pub fn classify_enum_derive(input: TokenStream) -> TokenStream {
     };
 
     let expanded = quote! {
-        impl shrink::Classify for #name {
+        impl crate::Classify for #name {
             type Output = #output_type;
 
             fn classify(&self) -> Self::Output {
