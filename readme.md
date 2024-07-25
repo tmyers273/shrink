@@ -50,6 +50,20 @@ different items.
 # Usage
 
 ```rust
+#[derive(Classify)]
+struct Item {
+    first: u8,
+    second: String,
+    third: SomeEnum,
+}
+
+#[derive(ClassifyEnum)]
+enum SomeEnum {
+    A,
+    B,
+    C,
+}
+
 fn shrink(items: Vec<Item>) -> Vec<Item> {
     let hm = FxHashMap::default();
 
