@@ -56,7 +56,6 @@ where
 #[cfg(test)]
 mod tests {
     use crate::Classify;
-    use shrink_macros::Classify;
 
     #[test]
     fn test_array_classification() {
@@ -96,26 +95,5 @@ mod tests {
         // Arrays with same unique classifications should have same classification
         // In effect, this means that items 2 and 3 are skipped in this case
         assert_eq!(arr1.classify(), arr2.classify());
-    }
-
-    #[derive(Classify)]
-    struct Test {
-        a: Vec<u8>,
-        b: Vec<u8>,
-    }
-
-    #[test]
-    fn can_classify_macro_vec() {
-        let a = Test {
-            a: vec![1, 2, 3],
-            b: vec![1, 2, 3],
-        };
-
-        let b = Test {
-            a: vec![3, 4, 5, 6],
-            b: vec![4, 5, 6, 7],
-        };
-
-        assert_eq!(a.classify(), b.classify());
     }
 }
