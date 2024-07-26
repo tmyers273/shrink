@@ -9,13 +9,7 @@ where
     type Output = u64;
 
     fn classify(&self) -> Self::Output {
-        let unique_classifications: BTreeSet<_> = self.iter().map(|item| item.classify()).collect();
-
-        let mut hasher = DefaultHasher::new();
-        for classification in unique_classifications {
-            classification.hash(&mut hasher);
-        }
-        hasher.finish()
+        self.as_slice().classify()
     }
 }
 
@@ -26,12 +20,24 @@ where
     type Output = u64;
 
     fn classify(&self) -> Self::Output {
-        let unique_classifications: BTreeSet<_> = self.iter().map(|item| item.classify()).collect();
-
         let mut hasher = DefaultHasher::new();
+
+        // Hash the length of the slice, classifying all
+        // items with two or more elements as the same
+        match self.len() {
+            0 => 0.hash(&mut hasher),
+            1 => 1.hash(&mut hasher),
+            _ => 2.hash(&mut hasher),
+        }
+
+        // Get a unique, sorted list of classifications
+        let unique_classifications = self.iter().map(Classify::classify).collect::<BTreeSet<_>>();
+
+        // Then hash those
         for classification in unique_classifications {
             classification.hash(&mut hasher);
         }
+
         hasher.finish()
     }
 }
@@ -43,25 +49,29 @@ where
     type Output = u64;
 
     fn classify(&self) -> Self::Output {
-        let unique_classifications: BTreeSet<_> = self.iter().map(|item| item.classify()).collect();
-
-        let mut hasher = DefaultHasher::new();
-        for classification in unique_classifications {
-            classification.hash(&mut hasher);
-        }
-        hasher.finish()
+        self.as_slice().classify()
     }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::Classify;
-    use shrink_macros::Classify;
+
+    #[test]
+    fn test_array_classification_length() {
+        let arr1: [u8; 0] = [];
+        let arr2 = [1u8];
+        let arr3 = [1u8, 1u8];
+
+        assert_ne!(arr1.classify(), arr2.classify());
+        assert_ne!(arr1.classify(), arr3.classify());
+        assert_ne!(arr2.classify(), arr3.classify());
+    }
 
     #[test]
     fn test_array_classification() {
         let arr1 = [1u8, 2, 3];
-        let arr2 = [1u8];
+        let arr2 = [1u8, 2, 3, 4];
 
         // Arrays with same unique classifications should have same classification
         // In effect, this means that items 2 and 3 are skipped in this case
@@ -76,7 +86,7 @@ mod tests {
     #[test]
     fn test_slice_classification() {
         let arr1 = &[1u8, 2, 3];
-        let arr2 = &[1u8];
+        let arr2 = &[1u8, 2, 3, 4];
 
         // Arrays with same unique classifications should have same classification
         // In effect, this means that items 2 and 3 are skipped in this case
@@ -91,31 +101,10 @@ mod tests {
     #[test]
     fn test_mixed_classification() {
         let arr1 = [1u8, 2, 3];
-        let arr2 = &[1u8];
+        let arr2 = &[1u8, 2];
 
         // Arrays with same unique classifications should have same classification
         // In effect, this means that items 2 and 3 are skipped in this case
         assert_eq!(arr1.classify(), arr2.classify());
-    }
-
-    #[derive(Classify)]
-    struct Test {
-        a: Vec<u8>,
-        b: Vec<u8>,
-    }
-
-    #[test]
-    fn can_classify_macro_vec() {
-        let a = Test {
-            a: vec![1, 2, 3],
-            b: vec![1, 2, 3],
-        };
-
-        let b = Test {
-            a: vec![3, 4, 5, 6],
-            b: vec![4, 5, 6, 7],
-        };
-
-        assert_eq!(a.classify(), b.classify());
     }
 }

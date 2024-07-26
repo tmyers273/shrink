@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 use chrono::{DateTime, NaiveDate, Utc};
-use shrink::Classify;
 use shrink_macros::{Classify, ClassifyEnum};
 
 #[derive(Classify)]
