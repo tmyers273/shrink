@@ -1,3 +1,5 @@
+extern crate core;
+
 mod arrays_and_slices;
 mod bool;
 mod date_time;
